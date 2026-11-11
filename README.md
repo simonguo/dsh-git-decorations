@@ -13,7 +13,27 @@
 | 忽略 | 无 | 主题次要文字色 |
 | 目录内有变化 | ● | 目录内优先级最高的状态色 |
 
-## 使用
+## 安装与使用
+
+### 从 npm 安装（推荐）
+
+npm 包：[dsh-git-decorations](https://www.npmjs.com/package/dsh-git-decorations)，已发布 `0.1.0`。
+
+让 DSH 助手通过 Plugin Manager 安装并启用：
+
+```json
+{"action":"install_bundle","target":"dsh-git-decorations"}
+```
+
+或使用 DSH CLI（将 `web` 替换为实际 Profile 名称）：
+
+```sh
+dsh plugin --profile web add dsh-git-decorations
+```
+
+直接 `npm install` 只下载包，不会自动把插件注册到 DSH。无需全局 npm 安装。
+
+### 从源码安装
 
 ```sh
 git clone https://github.com/simonguo/dsh-git-decorations.git
@@ -26,7 +46,7 @@ cd dsh-git-decorations
 {"action":"install_bundle","target":"/absolute/path/to/dsh-git-decorations"}
 ```
 
-本地链接安装后请保留目录；关闭插件即可恢复默认显示。尚未发布 npm 包或市场条目。
+本地链接安装后请保留目录；关闭插件即可恢复默认显示。也可安装 [GitHub Release 的预构建包](https://github.com/simonguo/dsh-git-decorations/releases/latest)。市场申请：[awesome-dsh-plugin #14287](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/14287)，以审核合并为准。
 
 会话标题栏显示 Git 按钮，点击可手动刷新；悬停可查看状态。自动每 8 秒刷新一次，隐藏页面暂停。不同主题采用语义色，不硬编码 VS Code 主题的具体色值。
 
@@ -56,3 +76,28 @@ node --check client.js
 ```
 
 测试使用独立临时仓库，覆盖 porcelain -z、空格/Unicode/换行文件名、rename、目录汇总、并发缓存、真实修改/新增/暂存读取，并验证读取前后 Git 状态一致。
+
+## npm 自动发布（维护者）
+
+工作流：`.github/workflows/publish.yml`。在 GitHub 发布一个 Release 时自动执行，也可以在 Actions → Publish to npm → Run workflow 中手动指定现有版本标签。
+
+1. 修改 `package.json` 版本并提交代码，等待 Validate CI 通过。
+2. 创建与版本一致的标签，例如 `v1.0.2`，然后发布对应 GitHub Release。
+3. 工作流检出标签、运行校验、检查 npm 是否已有该版本，再通过 OIDC 发布公开包和 provenance。
+
+正式版本使用 `latest`，含预发布后缀的版本使用 `next`。已存在的版本跳过，不覆盖、不重新发布。默认分支普通 push 和上游图标同步 PR 不会直接发布 npm。
+
+首次使用前，在 npm 包的 Settings → Trusted Publisher 配置：
+
+| 字段 | 填写 |
+|---|---|
+| Publisher | GitHub Actions |
+| Organization or user | `simonguo` |
+| Repository | `dsh-git-decorations` |
+| Workflow filename | `publish.yml`（只填文件名） |
+| Environment name | 留空（工作流未声明 environment） |
+| Allowed actions | 勾选 **Allow npm publish** |
+
+Label 可填 `GitHub Actions`。工作流使用 GitHub 托管 Ubuntu runner、Node.js 24、npm 11 和 `id-token: write`；不需要 `NPM_TOKEN`，不要把个人 token 或 OTP 放进工作流。
+
+Trusted Publisher 必须由 npm 包管理员在 npm 网页完成。仅添加 YAML 不会自动建立 npm 信任关系。配置完成后，可手动执行已有标签的发布以补发缺失版本；存在的版本会跳过。
