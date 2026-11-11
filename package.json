@@ -1,0 +1,15 @@
+{
+  "name": "dsh-git-decorations",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "author": "Simon Guo",
+  "repository": {"type":"git","url":"git+https://github.com/simonguo/dsh-git-decorations.git"},
+  "homepage": "https://github.com/simonguo/dsh-git-decorations#readme",
+  "bugs": {"url":"https://github.com/simonguo/dsh-git-decorations/issues"},
+  "description": "Read-only Git status colors and badges in the native DSH file tree.",
+  "exports": {".": "./index.js", "./client": "./client.js", "./package.json": "./package.json", "./icon": "./icon.svg", "./locale/*.json": "./locale/*.json"},
+  "files": ["index.js", "LICENSE", "git-status.js", "client.js", "cordis.patch.yml", "icon.svg", "locale/*.json", "README.md"],
+  "scripts": {"test": "node --test tests/*.test.js"},
+  "dsh": {"bundle": {"patch": "./cordis.patch.yml"}, "client": {"platform": "web", "immediately": true, "inject": ["@deepseek-ai/dsh-client-ui-renderer", "@deepseek-ai/dsh-client-connection"]}}
+}

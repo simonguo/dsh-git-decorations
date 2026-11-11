@@ -1,0 +1,8 @@
+node_modules/
+*.tgz
+.DS_Store
+coverage/
+*.log
+# Temporary compatibility entries retained only for the running local instance
+host-fetch.js
+host-live.js
